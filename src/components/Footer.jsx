@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import propTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
  const Footer = ({name, email, phone, bankName, bankAccount, website, address}) => {
   return (
@@ -45,12 +45,12 @@ import propTypes from 'prop-types'
 }
 
 Footer.propTypes = {
-  name: propTypes.string.isRequired,
-  email: propTypes.string.isRequired,
-  address: propTypes.string.isRequired,
-  phone: propTypes.number.isRequired,
-  bankName: propTypes.string.isRequired,
-  bankAccount: propTypes.number.isRequired,
-  website: propTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  phone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  bankName: PropTypes.string.isRequired,
+  bankAccount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  website: PropTypes.string.isRequired,
 }
 export default Footer

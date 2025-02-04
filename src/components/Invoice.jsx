@@ -165,7 +165,7 @@ const Invoice = () => {
                 <div className="flex p-2 space-y-2 flex-col">
                   <label htmlFor="bankAccount">Bank Account Number:</label>
                   <input
-                    type="number"
+                    type="text"
                     name="bankAccount"
                     id="bankAccount"
                     placeholder="Enter bank account number"

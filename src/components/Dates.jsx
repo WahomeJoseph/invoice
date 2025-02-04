@@ -20,7 +20,7 @@ const Dates = ({invoiceNumber, invoiceDate, dueDate}) => {
   )
 }
 Dates.propTypes = {
-  invoiceNumber: PropTypes.number.isRequired,
+  invoiceNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   invoiceDate: PropTypes.string.isRequired,
   dueDate: PropTypes.string.isRequired,
 }
