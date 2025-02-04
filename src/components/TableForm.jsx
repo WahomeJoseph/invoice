@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
 import { MdDeleteOutline } from "react-icons/md";
@@ -10,6 +10,13 @@ import { CiEdit } from "react-icons/ci";
   const [edit, setEdit] = useState(false)
   const handleSubmit = (e) =>{
     e.preventDefault()
+    if (description === '' || quantity === '' || price === '') {
+      setList('')
+      toast.error('All fields are required!')
+    }
+    if (!Number.isInteger(Number(quantity)) || !Number.isInteger(Number(price))) {
+      toast.error("Quantity and Price must be valid integers!")
+    }
     const newItem = {
       id: uuidv4(),
       description,
@@ -36,16 +43,17 @@ import { CiEdit } from "react-icons/ci";
   
  // calc total amount
  useEffect(() => {
-   let rows = document.querySelectorAll('.amount')
+   let rows = document.querySelectorAll(".amount")
    let sum = 0
    
    for (let i = 0; i < rows.length; i++) {
      if (rows[i].className === 'amount') {
        sum += isNaN(rows[i].innerHTML) ? 0 : parseInt(rows[i].innerHTML)
+       setTotal(sum)
      }
+     console.log(sum)
    }
-   console.log(sum)
-   setTotal(sum)
+  
  })
   // edit item details
   const handleEdit = (id) => {
@@ -74,6 +82,7 @@ import { CiEdit } from "react-icons/ci";
             placeholder="Enter item description"
             maxLength={96}
             value={description}
+            autoComplete="off"
             className="p-2 rounded-sm border border-blue-900"
             onChange={(e) => setDescription(e.target.value)}/>
         </div>
@@ -88,6 +97,7 @@ import { CiEdit } from "react-icons/ci";
               placeholder="Enter item quantity"
               maxLength={33}
               value={quantity}
+              autoComplete="off"
               className="p-2 rounded-sm border border-blue-900"
               onChange={(e) => setQuantity(e.target.value)}/>
           </div>
@@ -101,10 +111,11 @@ import { CiEdit } from "react-icons/ci";
               placeholder="Enter item price"
               maxLength={33}
               value={price}
+              autoComplete="off"
               className="p-2 rounded-sm border border-blue-900"
               onChange={(e) => setPrice(e.target.value)}/>
           </div>
-          <div id='amount' className="amount flex p-2 space-y-2 flex-col">
+          <div className="amount flex p-2 space-y-2 flex-col">
             <label htmlFor="price">Amount:</label>
             <span>{amount}</span>
           </div>
@@ -114,14 +125,14 @@ import { CiEdit } from "react-icons/ci";
         </button>
       </form>
 
-      <>
+      {list.length > 0 && ( <>
       <table width="100%" className="mb-10 w-full">
         <thead>
           <tr className="bg-gray-100 border border-blue-700">
             <td className="font-bold p-2">Description</td>
             <td className="font-bold p-2">Quantity</td>
             <td className="font-bold p-2">Price</td>
-            <td className="amount font-bold p-2">Amount</td>
+            <td className="font-bold p-2">Amount</td>
             <td className="font-bold p-2">Actions</td>
           </tr>
         </thead>
@@ -132,7 +143,7 @@ import { CiEdit } from "react-icons/ci";
                 <td className='p-2'>{description}</td>
                 <td className='p-2'>{quantity}</td>
                 <td className='p-2'>{price}</td>
-                <td className='p-2'>{amount}</td>
+                <td className='amount' style={{padding: '8px'}}>{amount}</td>
                 <td className='flex flex-wrap p-2 justify-between'>
                   <button onClick={() => handleEdit(id)}><CiEdit className="text-green-600 text-3xl cursor-pointer hover:scale-[+1.2] transition-all duration-300" /></button>
                   <button onClick={() => handleDelete(id)}><MdDeleteOutline className="text-red-500 font-bold text-3xl cursor-pointer hover:scale-[+1.2] transition-all duration-300" /></button>
@@ -144,10 +155,10 @@ import { CiEdit } from "react-icons/ci";
       </table>
       <div>
         <span className="flex items-end justify-end text-blue-700 text-3xl font-bold">
-          Kshs. {total}
+          Kshs. {total.toLocaleString()}
         </span>
       </div> 
-    </>
+    </> )}
     </div>
   )
 }
