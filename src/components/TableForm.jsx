@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { v4 as uuidv4 } from 'uuid'
@@ -7,9 +7,9 @@ import { MdDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 
  const TableForm = ({description,setDescription, quantity,setQuantity, price,setPrice, amount, setAmount, list, setList}) => {
+  const [edit, setEdit] = useState(false)
   const handleSubmit = (e) =>{
     e.preventDefault()
-
     const newItem = {
       id: uuidv4(),
       description,
@@ -32,7 +32,17 @@ import { CiEdit } from "react-icons/ci";
     calcAmount()
   }, [quantity, amount, price, setAmount])
 
-  
+  const handleEdit = (id) => {
+    const edit= list.find((row) => row.id === id)
+    setList(list.filter((row) => row.id !== id))
+    setEdit(true)
+    setDescription(edit.description)
+    setQuantity(edit.quantity)
+    setPrice(edit.price)
+  }
+  const handleDelete = (id) => {
+    setList(list.filter((row) => row.id !== id))
+  }
   
   return (
     <div>
@@ -93,16 +103,7 @@ import { CiEdit } from "react-icons/ci";
             <td className="font-bold p-2">Quantity</td>
             <td className="font-bold p-2">Price</td>
             <td className="font-bold p-2">Amount</td>
-            <td>
-              <button>
-                <CiEdit className="text-green-500 font-bold text-xl" />
-              </button>
-            </td>
-            <td>
-              <button>
-                 <MdDeleteOutline className="text-red-500 font-bold text-xl" />
-              </button>
-            </td>
+            <td className="font-bold p-2">Actions</td>
           </tr>
         </thead>
         {list.map(({ id, description, quantity, price, amount }) => (
@@ -113,6 +114,10 @@ import { CiEdit } from "react-icons/ci";
                 <td className='p-2'>{quantity}</td>
                 <td className='p-2'>{price}</td>
                 <td className='p-2'>{amount}</td>
+                <td className='flex flex-wrap p-2 justify-between'>
+                  <button onClick={() => handleEdit(id)}><CiEdit className="text-green-600 text-3xl cursor-pointer hover:scale-[+1.2] transition-all duration-300" /></button>
+                  <button onClick={() => handleDelete(id)}><MdDeleteOutline className="text-red-500 font-bold text-3xl cursor-pointer hover:scale-[+1.2] transition-all duration-300" /></button>
+                </td>
               </tr>
             </tbody>
           </React.Fragment>
