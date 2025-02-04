@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { MdDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 
- const TableForm = ({description,setDescription, quantity,setQuantity, price,setPrice, amount, setAmount, list, setList}) => {
+ const TableForm = ({description,setDescription, quantity,setQuantity, price,setPrice, amount, setAmount, list, setList, total, setTotal}) => {
   const [edit, setEdit] = useState(false)
   const handleSubmit = (e) =>{
     e.preventDefault()
@@ -22,16 +22,32 @@ import { CiEdit } from "react-icons/ci";
     setPrice('')
     setAmount('')
     setList([...list, newItem])
+    setEdit(false)
     console.log(newItem)
   }
-  
+
+  // calc amount
   useEffect(() => {
     const calcAmount = () => {
       setAmount(quantity * price)
     }
     calcAmount()
   }, [quantity, amount, price, setAmount])
-
+  
+ // calc total amount
+ useEffect(() => {
+   let rows = document.querySelectorAll('.amount')
+   let sum = 0
+   
+   for (let i = 0; i < rows.length; i++) {
+     if (rows[i].className === 'amount') {
+       sum += isNaN(rows[i].innerHTML) ? 0 : parseInt(rows[i].innerHTML)
+     }
+   }
+   console.log(sum)
+   setTotal(sum)
+ })
+  // edit item details
   const handleEdit = (id) => {
     const edit= list.find((row) => row.id === id)
     setList(list.filter((row) => row.id !== id))
@@ -40,10 +56,11 @@ import { CiEdit } from "react-icons/ci";
     setQuantity(edit.quantity)
     setPrice(edit.price)
   }
+  // delete item
   const handleDelete = (id) => {
     setList(list.filter((row) => row.id !== id))
   }
-  
+
   return (
     <div>
       <ToastContainer position="top-right" theme="colored" />
@@ -87,12 +104,14 @@ import { CiEdit } from "react-icons/ci";
               className="p-2 rounded-sm border border-blue-900"
               onChange={(e) => setPrice(e.target.value)}/>
           </div>
-          <div  className="flex p-2 space-y-2 flex-col">
+          <div id='amount' className="amount flex p-2 space-y-2 flex-col">
             <label htmlFor="price">Amount:</label>
             <span>{amount}</span>
           </div>
         </div>
-        <button type='submit' className="bg-blue-700 p-2 text-white ml-2 mt-2 mb-4 font-bold py-2 px-4 border border-blue-700 rounded-md shadow-sm cursor-pointer hover:bg-transparent hover:text-blue-700 hover:border-blue-700 transition-all duration-300">Add Item</button>
+        <button type='submit' className="bg-blue-700 p-2 text-white ml-2 mt-2 mb-4 font-bold py-2 px-4 border border-blue-700 rounded-md shadow-sm cursor-pointer hover:bg-transparent hover:text-blue-700 hover:border-blue-700 transition-all duration-300">
+          {edit? 'Editing...' : 'Add Item'}
+        </button>
       </form>
 
       <>
@@ -102,7 +121,7 @@ import { CiEdit } from "react-icons/ci";
             <td className="font-bold p-2">Description</td>
             <td className="font-bold p-2">Quantity</td>
             <td className="font-bold p-2">Price</td>
-            <td className="font-bold p-2">Amount</td>
+            <td className="amount font-bold p-2">Amount</td>
             <td className="font-bold p-2">Actions</td>
           </tr>
         </thead>
@@ -123,11 +142,12 @@ import { CiEdit } from "react-icons/ci";
           </React.Fragment>
         ))}
       </table>
+      <div>
+        <span className="flex items-end justify-end text-blue-700 text-3xl font-bold">
+          Kshs. {total}
+        </span>
+      </div> 
     </>
-
-      <ul>
-      
-      </ul>
     </div>
   )
 }
@@ -141,7 +161,9 @@ TableForm.propTypes = {
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   setAmount: PropTypes.func.isRequired,
   list: PropTypes.array.isRequired,
-  setList: PropTypes.func.isRequired
+  setList: PropTypes.func.isRequired,
+  total: PropTypes.number.isRequired,
+  setTotal: PropTypes.func.isRequired
 }
 
 export default TableForm

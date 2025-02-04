@@ -36,6 +36,7 @@ const Invoice = () => {
   const [price, setPrice] = useState("")
   const [amount, setAmount] = useState("")
   const [list, setList] = useState([])
+  const [total, setTotal] = useState(0)
   // const { name, setName, address, setAddress, email, setEmail, phone, setPhone, bankName, setBankName, bankAccount, setBankAccount, website, setWebsite, clientName, setClientName, clientAddress, setClientAddress, invoiceNumber, setInvoiceNumber, invoiceDate, setInvoiceDate, dueDate, setDueDate, notes, setNotes, componentRef } = useContext(StateInvoice)
   return (
     <>
@@ -257,7 +258,9 @@ const Invoice = () => {
                  price={price} setPrice={setPrice} 
                  amount={amount} setAmount={setAmount}
                  list={list}
-                 setList={setList}/>
+                 setList={setList}
+                 total={total}
+                 setTotal={setTotal}/>
               </article>
 
               <label htmlFor="notes" className="text-xl mt-6 p-2">Additional Notes:</label>
